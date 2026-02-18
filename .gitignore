@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Serverless build artifacts
+.serverless/
+**/.serverless/
+
+# Python virtual environments
+.venv/
+**/.venv/
+
+# OS / Editor files
+*.DS_Store
+*.pyc
+__pycache__/
+.vscode/

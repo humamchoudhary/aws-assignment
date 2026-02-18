@@ -1,0 +1,155 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: humam
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: rules
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${opt:region, "ap-southeast-2"}
+  stage: ${self:custom.stage}
+
+  environment:
+    STAGE: ${self:provider.stage}
+    RULES_TABLE: ${self:custom.rulesTable}
+    ALERTS_TABLE: ${self:custom.alertsTable}
+    EventsQueueArn: EventsQueueArn-${self:provider.stage}
+    EventsQueueUrl: EventsQueueUrl-${self:provider.stage}
+    EventsDLQUrl: ${cf:events-${self:provider.stage}.EventsDLQ}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt RulesTable.Arn
+            - !Sub "${RulesTable.Arn}/index/*"
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt AlertsTable.Arn
+            - !Sub "${AlertsTable.Arn}/index/*"
+        - Effect: Allow
+          Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+            - sqs:ChangeMessageVisibility
+          Resource:
+            - ${cf:events-${self:provider.stage}.EventsQueueArn}
+
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - ${cf:events-${self:provider.stage}.EventsDLQArn}
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  rulesTable: alert_rules-${self:provider.stage}
+  alertsTable: triggered_alerts-${self:provider.stage}
+
+functions:
+  createRule:
+    handler: handler.createRule
+    description: Create a new alert rule for a device
+    events:
+      - http:
+          path: rules
+          method: post
+          cors: true
+
+  listRules:
+    handler: handler.listRules
+    description: List alert rules, optionally filtered by device_id
+    events:
+      - http:
+          path: rules
+          method: get
+          cors: true
+
+  getAlerts:
+    handler: handler.getAlerts
+    description: List triggered alerts, optionally filtered by device_id
+    events:
+      - http:
+          path: alerts
+          method: get
+          cors: true
+
+  evaluateAlerts:
+    handler: handler.evaluateAlerts
+    description: SQS consumer — evaluate device events against alert rules
+    # reservedConcurrency: 10 # prevent runaway scaling
+    events:
+      - sqs:
+          arn: ${cf:events-${self:provider.stage}.EventsQueueArn}
+          batchSize: 10
+          maximumBatchingWindow: 5 # seconds — improves throughput
+          functionResponseType: ReportBatchItemFailures # partial batch failure support
+
+resources:
+  Resources:
+    RulesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.rulesTable}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: device_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: device_id-index
+            KeySchema:
+              - AttributeName: device_id
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    AlertsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.alertsTable}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+          - AttributeName: device_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: device_id-index
+            KeySchema:
+              - AttributeName: device_id
+                KeyType: HASH
+              - AttributeName: SK
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        TimeToLiveSpecification:
+          AttributeName: ttl
+          Enabled: true
+
+package:
+  exclude:
+    # - node_modules/**
+    - .serverless/**
