@@ -47,7 +47,6 @@ jobs:
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
-        working-directory: events
         with:
           args: deploy --stage dev
         env:
@@ -60,7 +59,6 @@ jobs:
 
       - name: serverless deploy
         uses: serverless/github-action@v3.2
-        working-directory: rules
         with:
           args: deploy --stage dev
         env:
