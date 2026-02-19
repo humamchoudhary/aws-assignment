@@ -13,6 +13,7 @@ jobs:
     env:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       STAGE: dev
+      SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
 
     steps:
       - name: Checkout repository
@@ -26,40 +27,41 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      # ---------- Setup ----------
+      # ---------- Language Setup ----------
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: "npm"
+          cache-dependency-path: "rules/package-lock.json"
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.14"
+          python-version: "3.12" # Stable Lambda support
 
-      # - name: Install Serverless Framework
-      #   run: npm install -g serverless
+      # ---------- Deploy Events Service (Python) ----------
+      # We install requirements in the folder so Serverless can package them
+      - name: Install Python Dependencies
+        working-directory: ./events
+        run: |
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
 
-      # ---------- Deploy Python Events Service ----------
-      - name: Deploy Events Service (Python)
-        working-directory: events
-        run: pip install -r requirements.txt
-
-      - name: serverless deploy
-        uses: serverless/github-action@v3.2
+      - name: Deploy Events Service
+        uses: serverless/github-action@v4
         with:
-          args: deploy --stage dev
-        env:
-          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          entrypoint: /usr/bin/bash
+          args: -c "cd events && serverless deploy --stage dev"
 
       # ---------- Deploy Rules Service (Node.js) ----------
-      - name: Deploy Rules Service (Node.js)
-        working-directory: rules
+      - name: Install Node Dependencies
+        working-directory: ./rules
         run: npm install
 
-      - name: serverless deploy
-        uses: serverless/github-action@v3.2
+      - name: Deploy Rules Service
+        uses: serverless/github-action@v4
         with:
-          args: deploy --stage dev
-        env:
-          SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          entrypoint: /usr/bin/bash
+          args: -c "cd rules && serverless deploy --stage dev"
