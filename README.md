@@ -2,7 +2,7 @@
 
 A serverless backend for IoT device event ingestion with real-time alert rule evaluation.
 
-**Stack:** Python 3.11 · Node.js 20 · AWS Lambda · API Gateway · DynamoDB · SQS
+**Stack:** Python 3.12 · Node.js 20 · AWS Lambda · API Gateway · DynamoDB · SQS
 
 ---
 
