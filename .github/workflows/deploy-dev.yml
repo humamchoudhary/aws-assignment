@@ -50,7 +50,7 @@ jobs:
         uses: serverless/github-action@v4
         with:
           entrypoint: /usr/bin/bash
-          args: -c "cd rules && serverless deploy --stage dev --region $AWS_REGION"
+          args: -c "python -V && cd rules && serverless deploy --stage dev --region $AWS_REGION"
 
       # ---------- Deploy Events Service (Python) ----------
       # We install requirements in the folder so Serverless can package them
@@ -66,4 +66,4 @@ jobs:
         uses: serverless/github-action@v4
         with:
           entrypoint: /usr/bin/bash
-          args: -c "cd events && serverless deploy --stage dev  --region $AWS_REGION"
+          args: -c "python -V && cd events && serverless deploy --stage dev  --region $AWS_REGION"
