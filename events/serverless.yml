@@ -5,7 +5,7 @@ service: events
 
 provider:
   name: aws
-  runtime: python3.14
+  runtime: python3.12
   region: ${opt:region, "ap-southeast-2"}
   stage: ${self:custom.stage}
   environment:

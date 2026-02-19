@@ -38,19 +38,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
-          python-version: "3.14" # Stable Lambda support
-          allow-prereleases: true
-
-      # ---------- Deploy Rules Service (Node.js) ----------
-      - name: Install Node Dependencies
-        working-directory: ./rules
-        run: npm install
-
-      - name: Deploy Rules Service
-        uses: serverless/github-action@v4
-        with:
-          entrypoint: /usr/bin/bash
-          args: -c "python -V && cd rules && serverless deploy --stage dev --region $AWS_REGION"
+          python-version: "3.12" # Stable Lambda support
 
       # ---------- Deploy Events Service (Python) ----------
       # We install requirements in the folder so Serverless can package them
@@ -67,3 +55,14 @@ jobs:
         with:
           entrypoint: /usr/bin/bash
           args: -c "python -V && cd events && serverless deploy --stage dev  --region $AWS_REGION"
+
+      # ---------- Deploy Rules Service (Node.js) ----------
+      - name: Install Node Dependencies
+        working-directory: ./rules
+        run: npm install
+
+      - name: Deploy Rules Service
+        uses: serverless/github-action@v4
+        with:
+          entrypoint: /usr/bin/bash
+          args: -c "python -V && cd rules && serverless deploy --stage dev --region $AWS_REGION"
