@@ -38,7 +38,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12" # Stable Lambda support
+          python-version: "3.14" # Stable Lambda support
 
       # ---------- Deploy Events Service (Python) ----------
       # We install requirements in the folder so Serverless can package them
