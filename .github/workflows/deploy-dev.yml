@@ -39,7 +39,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.14" # Stable Lambda support
-
+          allow-prereleases: true
       # ---------- Deploy Events Service (Python) ----------
       # We install requirements in the folder so Serverless can package them
       - name: Install Python Dependencies
