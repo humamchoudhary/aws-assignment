@@ -6,141 +6,153 @@
   },
   "item": [
     {
-      "name": "Events: Add New Event",
-      "id": "de9552aa-b3a2-4969-b6b3-5b2dfbb3ab65",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{ \"device_id\": {{device_id}}, \"type\": \"temperature\", \"value\": 61.2, \"ts\": 12600000123000012 }",
-          "options": {
-            "raw": {
-              "language": "json"
+      "name": "Events",
+      "item": [
+        {
+          "name": "Events: Add New Event",
+          "id": "de9552aa-b3a2-4969-b6b3-5b2dfbb3ab65",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"device_id\": \"{{device_id}}\", \"type\": \"temperature\", \"value\": 61.2, \"ts\": 12600000123000012 }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{events_url}}/events",
+              "host": [
+                "{{events_url}}"
+              ],
+              "path": [
+                "events"
+              ]
             }
-          }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{events_url}}/events",
-          "host": ["{{events_url}}"],
-          "path": ["events"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Events: Get Device Events",
-      "id": "e0799ead-756d-4b83-991e-2d97119b5322",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{rules_url}}/devices/{{device_id}}/events",
-          "host": ["{{rules_url}}"],
-          "path": ["devices", "{{device_id}}", "events"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Rules: Create Rule",
-      "id": "96dbed24-6693-45a8-ad2e-243786317be3",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{ \"device_id\": {{device_id}}, \"metric\": \"load\", \"operator\": \"<\", \"threshold\": 50, \"enabled\": true }",
-          "options": {
-            "raw": {
-              "language": "json"
+        {
+          "name": "Events: Get Device Events",
+          "id": "e0799ead-756d-4b83-991e-2d97119b5322",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rules_url}}/devices/{{device_id}}/events",
+              "host": [
+                "{{rules_url}}"
+              ],
+              "path": [
+                "devices",
+                "{{device_id}}",
+                "events"
+              ]
             }
-          }
+          },
+          "response": []
+        }
+      ],
+      "id": "7da6ec7a-e742-46b3-b96f-9af9d99f0882"
+    },
+    {
+      "name": "Rules",
+      "item": [
+        {
+          "name": "Rules: Create Rule",
+          "id": "96dbed24-6693-45a8-ad2e-243786317be3",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"device_id\": {{device_id}}, \"metric\": \"load\", \"operator\": \"<\", \"threshold\": 50, \"enabled\": true }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{rules_url}}/rules",
+              "host": [
+                "{{rules_url}}"
+              ],
+              "path": [
+                "rules"
+              ]
+            }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "{{rules_url}}/rules",
-          "host": ["{{rules_url}}"],
-          "path": ["rules"]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Rules: List Rules",
-      "id": "3fa3cf32-5e0b-475d-b0c2-45ef5aabfb24",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{rules_url}}/rules?device_id={{device_id}}",
-          "host": ["{{rules_url}}"],
-          "path": ["rules"],
-          "query": [
-            {
-              "key": "device_id",
-              "value": "{{device_id}}"
+        {
+          "name": "Rules: List Rules",
+          "id": "3fa3cf32-5e0b-475d-b0c2-45ef5aabfb24",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rules_url}}/rules?device_id={{device_id}}",
+              "host": [
+                "{{rules_url}}"
+              ],
+              "path": [
+                "rules"
+              ],
+              "query": [
+                {
+                  "key": "device_id",
+                  "value": "{{device_id}}"
+                }
+              ]
             }
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Rules: Get Alerts",
-      "id": "25b84110-b83e-49c1-a103-af66bc396882",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{rules_url}}/alerts?device_id={{device_id}}",
-          "host": ["{{rules_url}}"],
-          "path": ["alerts"],
-          "query": [
-            {
-              "key": "device_id",
-              "value": "{{device_id}}"
+          },
+          "response": []
+        },
+        {
+          "name": "Rules: Get Alerts",
+          "id": "25b84110-b83e-49c1-a103-af66bc396882",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{rules_url}}/alerts?device_id={{device_id}}",
+              "host": [
+                "{{rules_url}}"
+              ],
+              "path": [
+                "alerts"
+              ],
+              "query": [
+                {
+                  "key": "device_id",
+                  "value": "{{device_id}}"
+                }
+              ]
             }
-          ]
+          },
+          "response": []
         }
-      },
-      "response": []
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "id": "3a57c1c1-425b-42a2-bfd8-82db0aad3cce",
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [""]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "id": "205b40be-9ee4-43f2-8225-0d0ed6b3d437",
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [""]
-      }
+      ],
+      "id": "e30eab5c-1537-49f7-927b-897316a141af"
     }
   ],
   "variable": [
     {
-      "id": "2a679666-f6f5-48bb-ae61-9f91f35e9d73",
+      "id": "670732a2-ad2f-4d51-9ae4-13d8a865cbd3",
       "key": "rules_url",
-      "value": "https://6rkdsuoao3.execute-api.ap-southeast-2.amazonaws.com/dev/rules"
+      "value": "https://6rkdsuoao3.execute-api.ap-southeast-2.amazonaws.com/dev/"
     },
     {
-      "id": "936faacb-325c-4b82-b01e-c89b29b2205a",
+      "id": "c429ab47-3214-469f-a9e8-aa9c06eeaac3",
       "key": "events_url",
-      "value": "https://991y9p57v1.execute-api.ap-southeast-2.amazonaws.com/dev/events"
+      "value": "https://991y9p57v1.execute-api.ap-southeast-2.amazonaws.com/dev/"
     },
     {
-      "id": "3d6c2b1c-e9ea-43a3-bb41-fab1e330d293",
+      "id": "1478e879-e533-4def-90ee-e27a5173b5e1",
       "key": "device_id",
       "value": "D4"
     }
