@@ -39,17 +39,18 @@ jobs:
 
       - name: Install Serverless Framework
         run: npm install -g serverless
+        run: ls
 
       # ---------- Deploy Python Events Service ----------
       - name: Deploy Events Service (Python)
-        working-directory: services/events
+        working-directory: events
         run: |
           pip install -r requirements.txt
           serverless deploy --stage $STAGE
 
       # ---------- Deploy Rules Service (Node.js) ----------
       - name: Deploy Rules Service (Node.js)
-        working-directory: services/rules
+        working-directory: rules
         run: |
           npm install
           serverless deploy --stage $STAGE
