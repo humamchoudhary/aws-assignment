@@ -39,7 +39,6 @@ jobs:
 
       - name: Install Serverless Framework
         run: npm install -g serverless
-        run: ls
 
       # ---------- Deploy Python Events Service ----------
       - name: Deploy Events Service (Python)
