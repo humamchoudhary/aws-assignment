@@ -42,14 +42,14 @@ jobs:
 
       # ---------- Deploy Python Events Service ----------
       - name: Deploy Events Service (Python)
-        working-directory: services/events-python
+        working-directory: services/events
         run: |
           pip install -r requirements.txt
           serverless deploy --stage $STAGE
 
       # ---------- Deploy Rules Service (Node.js) ----------
       - name: Deploy Rules Service (Node.js)
-        working-directory: services/rules-node
+        working-directory: services/rules
         run: |
           npm install
           serverless deploy --stage $STAGE
