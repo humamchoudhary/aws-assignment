@@ -46,6 +46,7 @@ jobs:
         working-directory: ./events
         run: |
           if [ -f requirements.txt ]; then
+            python -V
             pip install -r requirements.txt
           fi
 
